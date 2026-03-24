@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import mlflow.pyfunc
-from databricks import sql
 import os
 
 # Page configuration
@@ -21,22 +20,26 @@ st.sidebar.header("Input Parameters")
 # Input widgets
 state = st.sidebar.selectbox(
     "State",
-    ["Karnataka", "Tamil Nadu", "Maharashtra"]
+    ["Karnataka", "Tamil Nadu", "Maharashtra", "Madhya Pradesh", "Manipur", "Telangana"]
 )
 
 district = st.sidebar.selectbox(
     "District",
-    ["Bangalore Rural", "Mysore", "Madurai"]
+    ["BANGALORE RURAL", "MYSORE", "MADURAI", "PUNE", "INDORE", "AHMEDNAGAR", 
+     "BELGAUM", "COIMBATORE", "NASHIK", "SOLAPUR"]
 )
 
 season = st.sidebar.selectbox(
     "Season",
-    ["Rabi", "Kharif", "Whole Year"]
+    ["Rabi", "Whole Year", "Kharif"]
 )
 
-crop = st.sidebar.selectbox(
-    "Crop",
-    ["Tomato", "Onion", "Wheat"]
+crop_year = st.sidebar.number_input(
+    "Crop Year",
+    min_value=1997,
+    max_value=2030,
+    value=2015,
+    step=1
 )
 
 area = st.sidebar.number_input(
@@ -51,32 +54,60 @@ area = st.sidebar.number_input(
 if st.sidebar.button("🔮 Predict Yield", type="primary"):
     with st.spinner("Loading model and making prediction..."):
         try:
-            # Load MLflow model
-            model_uri = "runs:/eb428de9a2b94983bf0c830070f81cea/crop_yield_model"
+            # Load MLflow model from Unity Catalog
+            model_uri = "models:/workspace.default.crop_yield_model/1"
             loaded_model = mlflow.pyfunc.load_model(model_uri)
             
-            # Prepare input DataFrame
-            input_df = pd.DataFrame([{
-                "state": state,
-                "district": district,
-                "season": season,
-                "crop": crop,
-                "area": area
-            }])
-            
-            # One-hot encode
-            input_df = pd.get_dummies(input_df)
-            
-            # Align with training columns
+            # Get the model's expected input schema
             try:
-                model_columns = loaded_model.metadata.get_input_schema().input_names()
-            except:
-                model_columns = loaded_model._model_impl.python_model._model.feature_names_in_
+                input_schema = loaded_model.metadata.get_input_schema()
+                model_columns = input_schema.input_names()
+                st.sidebar.success(f"✓ Model loaded ({len(model_columns)} features)")
+            except Exception as schema_error:
+                st.error(f"Could not get model schema: {schema_error}")
+                raise
             
+            # Initialize input with base features
+            input_data = {
+                "Crop_Year": crop_year,
+                "Area": area
+            }
+            
+            # Initialize ALL model features to False/0
             for col in model_columns:
-                if col not in input_df.columns:
-                    input_df[col] = 0
-            input_df = input_df[model_columns]
+                if col not in input_data:
+                    input_data[col] = False
+            
+            # Set the actual values for selected inputs
+            # State encoding (note: "Telangana " has a trailing space in the model)
+            state_mapping = {
+                "Karnataka": "State_Name_Karnataka",
+                "Madhya Pradesh": "State_Name_Madhya Pradesh",
+                "Maharashtra": "State_Name_Maharashtra",
+                "Manipur": "State_Name_Manipur",
+                "Tamil Nadu": "State_Name_Tamil Nadu",
+                "Telangana": "State_Name_Telangana "  # Note trailing space
+            }
+            if state in state_mapping:
+                feature_name = state_mapping[state]
+                if feature_name in input_data:
+                    input_data[feature_name] = True
+            
+            # District encoding
+            district_feature = f"District_Name_{district}"
+            if district_feature in input_data:
+                input_data[district_feature] = True
+            
+            # Season encoding (note: trailing spaces in model)
+            if season == "Rabi" and "Season_Rabi       " in input_data:
+                input_data["Season_Rabi       "] = True
+            elif season == "Whole Year" and "Season_Whole Year " in input_data:
+                input_data["Season_Whole Year "] = True
+            # Kharif is the reference category (all False)
+            
+            # Create DataFrame with correct column order
+            input_df = pd.DataFrame([input_data])
+            input_df = input_df[model_columns]  # Ensure correct order
             
             # Make prediction
             prediction = loaded_model.predict(input_df)[0]
@@ -89,7 +120,7 @@ if st.sidebar.button("🔮 Predict Yield", type="primary"):
             
             with col1:
                 st.metric("Area Cultivated", f"{area} ha")
-                st.metric("Crop", crop)
+                st.metric("Crop Year", crop_year)
             
             with col2:
                 st.metric("Season", season)
@@ -110,7 +141,7 @@ if st.sidebar.button("🔮 Predict Yield", type="primary"):
                     "state": state,
                     "district": district,
                     "season": season,
-                    "crop": crop,
+                    "crop_year": crop_year,
                     "area": area,
                     "predicted_production": prediction,
                     "timestamp": pd.Timestamp.now()
@@ -128,6 +159,19 @@ if st.sidebar.button("🔮 Predict Yield", type="primary"):
         except Exception as e:
             st.error(f"❌ Error during prediction: {str(e)}")
             st.exception(e)
+            
+            # Debug information
+            with st.expander("🔍 Debug Information"):
+                st.write("**Error Details:**")
+                st.code(str(e))
+                st.write("**Input Values:**")
+                st.json({
+                    "state": state,
+                    "district": district,
+                    "season": season,
+                    "crop_year": crop_year,
+                    "area": area
+                })
 
 else:
     # Initial state - show instructions
@@ -139,12 +183,28 @@ else:
     This application uses a machine learning model to predict crop production based on:
     - **State & District**: Geographic location
     - **Season**: Growing season (Rabi, Kharif, or Whole Year)
-    - **Crop**: Type of crop being cultivated
+    - **Crop Year**: Year of cultivation
     - **Area**: Cultivation area in hectares
     
     The model was trained using historical agricultural data and provides production estimates in tonnes.
+    
+    **Model Information:**
+    - Registry: Unity Catalog
+    - Model: `workspace.default.crop_yield_model`
+    - Version: 1
+    - Algorithm: Random Forest Regressor
+    - Features: 172 (including one-hot encoded categorical variables)
+    """)
+    
+    st.markdown("### 🎯 How to Use")
+    st.markdown("""
+    1. Select the **State** and **District** from the dropdown menus
+    2. Choose the **Season** for cultivation
+    3. Enter the **Crop Year** (historical or future)
+    4. Specify the **Area** in hectares
+    5. Click **Predict Yield** to get production estimates
     """)
 
 # Footer
 st.markdown("---")
-st.caption("🌾 Crop Yield Prediction System | Powered by MLflow & Databricks")
+st.caption("🌾 Crop Yield Prediction System | Powered by MLflow & Databricks Unity Catalog")

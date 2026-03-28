@@ -1,0 +1,181 @@
+artifact_path: dbfs:/databricks/mlflow-tracking/4071867472629731/logged_models/m-129a0fa4b1f14e92a0d61800e0a22eb1/artifacts
+databricks_runtime: client.5.1
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.12.3
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.6.1
+is_signature_from_type_hint: false
+mlflow_version: 3.8.1
+model_id: m-129a0fa4b1f14e92a0d61800e0a22eb1
+model_size_bytes: 2077382
+model_uuid: m-129a0fa4b1f14e92a0d61800e0a22eb1
+prompts: null
+run_id: dff97ae79a0d45179006b393554fc92f
+saved_input_example_info:
+  artifact_path: input_example.json
+  pandas_orient: split
+  serving_input_path: serving_input_example.json
+  type: dataframe
+signature:
+  inputs: '[{"type": "long", "name": "Crop_Year", "required": true}, {"type": "double",
+    "name": "Area", "required": true}, {"type": "boolean", "name": "State_Name_Karnataka",
+    "required": true}, {"type": "boolean", "name": "State_Name_Madhya Pradesh", "required":
+    true}, {"type": "boolean", "name": "State_Name_Maharashtra", "required": true},
+    {"type": "boolean", "name": "State_Name_Manipur", "required": true}, {"type":
+    "boolean", "name": "State_Name_Tamil Nadu", "required": true}, {"type": "boolean",
+    "name": "State_Name_Telangana ", "required": true}, {"type": "boolean", "name":
+    "District_Name_AHMEDNAGAR", "required": true}, {"type": "boolean", "name": "District_Name_AKOLA",
+    "required": true}, {"type": "boolean", "name": "District_Name_AMRAVATI", "required":
+    true}, {"type": "boolean", "name": "District_Name_ANANTAPUR", "required": true},
+    {"type": "boolean", "name": "District_Name_ANUPPUR", "required": true}, {"type":
+    "boolean", "name": "District_Name_ASHOKNAGAR", "required": true}, {"type": "boolean",
+    "name": "District_Name_AURANGABAD", "required": true}, {"type": "boolean", "name":
+    "District_Name_BAGALKOT", "required": true}, {"type": "boolean", "name": "District_Name_BALAGHAT",
+    "required": true}, {"type": "boolean", "name": "District_Name_BANGALORE RURAL",
+    "required": true}, {"type": "boolean", "name": "District_Name_BARWANI", "required":
+    true}, {"type": "boolean", "name": "District_Name_BEED", "required": true}, {"type":
+    "boolean", "name": "District_Name_BELGAUM", "required": true}, {"type": "boolean",
+    "name": "District_Name_BELLARY", "required": true}, {"type": "boolean", "name":
+    "District_Name_BENGALURU URBAN", "required": true}, {"type": "boolean", "name":
+    "District_Name_BETUL", "required": true}, {"type": "boolean", "name": "District_Name_BHANDARA",
+    "required": true}, {"type": "boolean", "name": "District_Name_BHIND", "required":
+    true}, {"type": "boolean", "name": "District_Name_BHOPAL", "required": true},
+    {"type": "boolean", "name": "District_Name_BIDAR", "required": true}, {"type":
+    "boolean", "name": "District_Name_BIJAPUR", "required": true}, {"type": "boolean",
+    "name": "District_Name_BISHNUPUR", "required": true}, {"type": "boolean", "name":
+    "District_Name_BULDHANA", "required": true}, {"type": "boolean", "name": "District_Name_BURHANPUR",
+    "required": true}, {"type": "boolean", "name": "District_Name_CHAMARAJANAGAR",
+    "required": true}, {"type": "boolean", "name": "District_Name_CHANDEL", "required":
+    true}, {"type": "boolean", "name": "District_Name_CHANDRAPUR", "required": true},
+    {"type": "boolean", "name": "District_Name_CHHATARPUR", "required": true}, {"type":
+    "boolean", "name": "District_Name_CHHINDWARA", "required": true}, {"type": "boolean",
+    "name": "District_Name_CHIKMAGALUR", "required": true}, {"type": "boolean", "name":
+    "District_Name_CHITRADURGA", "required": true}, {"type": "boolean", "name": "District_Name_CHITTOOR",
+    "required": true}, {"type": "boolean", "name": "District_Name_CHURACHANDPUR",
+    "required": true}, {"type": "boolean", "name": "District_Name_COIMBATORE", "required":
+    true}, {"type": "boolean", "name": "District_Name_CUDDALORE", "required": true},
+    {"type": "boolean", "name": "District_Name_DAMOH", "required": true}, {"type":
+    "boolean", "name": "District_Name_DATIA", "required": true}, {"type": "boolean",
+    "name": "District_Name_DAVANGERE", "required": true}, {"type": "boolean", "name":
+    "District_Name_DEWAS", "required": true}, {"type": "boolean", "name": "District_Name_DHAR",
+    "required": true}, {"type": "boolean", "name": "District_Name_DHARMAPURI", "required":
+    true}, {"type": "boolean", "name": "District_Name_DHARWAD", "required": true},
+    {"type": "boolean", "name": "District_Name_DHULE", "required": true}, {"type":
+    "boolean", "name": "District_Name_DINDIGUL", "required": true}, {"type": "boolean",
+    "name": "District_Name_DINDORI", "required": true}, {"type": "boolean", "name":
+    "District_Name_EAST GODAVARI", "required": true}, {"type": "boolean", "name":
+    "District_Name_ERODE", "required": true}, {"type": "boolean", "name": "District_Name_GADAG",
+    "required": true}, {"type": "boolean", "name": "District_Name_GADCHIROLI", "required":
+    true}, {"type": "boolean", "name": "District_Name_GULBARGA", "required": true},
+    {"type": "boolean", "name": "District_Name_GUNA", "required": true}, {"type":
+    "boolean", "name": "District_Name_GUNTUR", "required": true}, {"type": "boolean",
+    "name": "District_Name_GWALIOR", "required": true}, {"type": "boolean", "name":
+    "District_Name_HARDA", "required": true}, {"type": "boolean", "name": "District_Name_HASSAN",
+    "required": true}, {"type": "boolean", "name": "District_Name_HAVERI", "required":
+    true}, {"type": "boolean", "name": "District_Name_HINGOLI", "required": true},
+    {"type": "boolean", "name": "District_Name_HOSHANGABAD", "required": true}, {"type":
+    "boolean", "name": "District_Name_IMPHAL EAST", "required": true}, {"type": "boolean",
+    "name": "District_Name_IMPHAL WEST", "required": true}, {"type": "boolean", "name":
+    "District_Name_INDORE", "required": true}, {"type": "boolean", "name": "District_Name_JABALPUR",
+    "required": true}, {"type": "boolean", "name": "District_Name_JALGAON", "required":
+    true}, {"type": "boolean", "name": "District_Name_JALNA", "required": true}, {"type":
+    "boolean", "name": "District_Name_JHABUA", "required": true}, {"type": "boolean",
+    "name": "District_Name_KADAPA", "required": true}, {"type": "boolean", "name":
+    "District_Name_KANCHIPURAM", "required": true}, {"type": "boolean", "name": "District_Name_KANNIYAKUMARI",
+    "required": true}, {"type": "boolean", "name": "District_Name_KARIMNAGAR", "required":
+    true}, {"type": "boolean", "name": "District_Name_KARUR", "required": true}, {"type":
+    "boolean", "name": "District_Name_KATNI", "required": true}, {"type": "boolean",
+    "name": "District_Name_KHAMMAM", "required": true}, {"type": "boolean", "name":
+    "District_Name_KHANDWA", "required": true}, {"type": "boolean", "name": "District_Name_KHARGONE",
+    "required": true}, {"type": "boolean", "name": "District_Name_KODAGU", "required":
+    true}, {"type": "boolean", "name": "District_Name_KOLAR", "required": true}, {"type":
+    "boolean", "name": "District_Name_KOLHAPUR", "required": true}, {"type": "boolean",
+    "name": "District_Name_KOPPAL", "required": true}, {"type": "boolean", "name":
+    "District_Name_KRISHNA", "required": true}, {"type": "boolean", "name": "District_Name_KRISHNAGIRI",
+    "required": true}, {"type": "boolean", "name": "District_Name_KURNOOL", "required":
+    true}, {"type": "boolean", "name": "District_Name_LATUR", "required": true}, {"type":
+    "boolean", "name": "District_Name_MADURAI", "required": true}, {"type": "boolean",
+    "name": "District_Name_MAHBUBNAGAR", "required": true}, {"type": "boolean", "name":
+    "District_Name_MANDLA", "required": true}, {"type": "boolean", "name": "District_Name_MANDSAUR",
+    "required": true}, {"type": "boolean", "name": "District_Name_MANDYA", "required":
+    true}, {"type": "boolean", "name": "District_Name_MEDAK", "required": true}, {"type":
+    "boolean", "name": "District_Name_MORENA", "required": true}, {"type": "boolean",
+    "name": "District_Name_MYSORE", "required": true}, {"type": "boolean", "name":
+    "District_Name_NAGAPATTINAM", "required": true}, {"type": "boolean", "name": "District_Name_NAGPUR",
+    "required": true}, {"type": "boolean", "name": "District_Name_NALGONDA", "required":
+    true}, {"type": "boolean", "name": "District_Name_NAMAKKAL", "required": true},
+    {"type": "boolean", "name": "District_Name_NANDED", "required": true}, {"type":
+    "boolean", "name": "District_Name_NANDURBAR", "required": true}, {"type": "boolean",
+    "name": "District_Name_NARSINGHPUR", "required": true}, {"type": "boolean", "name":
+    "District_Name_NASHIK", "required": true}, {"type": "boolean", "name": "District_Name_NEEMUCH",
+    "required": true}, {"type": "boolean", "name": "District_Name_NIZAMABAD", "required":
+    true}, {"type": "boolean", "name": "District_Name_OSMANABAD", "required": true},
+    {"type": "boolean", "name": "District_Name_PANNA", "required": true}, {"type":
+    "boolean", "name": "District_Name_PARBHANI", "required": true}, {"type": "boolean",
+    "name": "District_Name_PERAMBALUR", "required": true}, {"type": "boolean", "name":
+    "District_Name_PRAKASAM", "required": true}, {"type": "boolean", "name": "District_Name_PUDUKKOTTAI",
+    "required": true}, {"type": "boolean", "name": "District_Name_PUNE", "required":
+    true}, {"type": "boolean", "name": "District_Name_RAICHUR", "required": true},
+    {"type": "boolean", "name": "District_Name_RAIGAD", "required": true}, {"type":
+    "boolean", "name": "District_Name_RAISEN", "required": true}, {"type": "boolean",
+    "name": "District_Name_RAJGARH", "required": true}, {"type": "boolean", "name":
+    "District_Name_RAMANATHAPURAM", "required": true}, {"type": "boolean", "name":
+    "District_Name_RANGAREDDI", "required": true}, {"type": "boolean", "name": "District_Name_RATLAM",
+    "required": true}, {"type": "boolean", "name": "District_Name_REWA", "required":
+    true}, {"type": "boolean", "name": "District_Name_SAGAR", "required": true}, {"type":
+    "boolean", "name": "District_Name_SALEM", "required": true}, {"type": "boolean",
+    "name": "District_Name_SANGLI", "required": true}, {"type": "boolean", "name":
+    "District_Name_SATARA", "required": true}, {"type": "boolean", "name": "District_Name_SATNA",
+    "required": true}, {"type": "boolean", "name": "District_Name_SEHORE", "required":
+    true}, {"type": "boolean", "name": "District_Name_SENAPATI", "required": true},
+    {"type": "boolean", "name": "District_Name_SEONI", "required": true}, {"type":
+    "boolean", "name": "District_Name_SHAHDOL", "required": true}, {"type": "boolean",
+    "name": "District_Name_SHAJAPUR", "required": true}, {"type": "boolean", "name":
+    "District_Name_SHEOPUR", "required": true}, {"type": "boolean", "name": "District_Name_SHIMOGA",
+    "required": true}, {"type": "boolean", "name": "District_Name_SHIVPURI", "required":
+    true}, {"type": "boolean", "name": "District_Name_SIDHI", "required": true}, {"type":
+    "boolean", "name": "District_Name_SIVAGANGA", "required": true}, {"type": "boolean",
+    "name": "District_Name_SOLAPUR", "required": true}, {"type": "boolean", "name":
+    "District_Name_SPSR NELLORE", "required": true}, {"type": "boolean", "name": "District_Name_SRIKAKULAM",
+    "required": true}, {"type": "boolean", "name": "District_Name_TAMENGLONG", "required":
+    true}, {"type": "boolean", "name": "District_Name_THANE", "required": true}, {"type":
+    "boolean", "name": "District_Name_THANJAVUR", "required": true}, {"type": "boolean",
+    "name": "District_Name_THE NILGIRIS", "required": true}, {"type": "boolean", "name":
+    "District_Name_THENI", "required": true}, {"type": "boolean", "name": "District_Name_THIRUVALLUR",
+    "required": true}, {"type": "boolean", "name": "District_Name_THIRUVARUR", "required":
+    true}, {"type": "boolean", "name": "District_Name_THOUBAL", "required": true},
+    {"type": "boolean", "name": "District_Name_TIKAMGARH", "required": true}, {"type":
+    "boolean", "name": "District_Name_TIRUCHIRAPPALLI", "required": true}, {"type":
+    "boolean", "name": "District_Name_TIRUNELVELI", "required": true}, {"type": "boolean",
+    "name": "District_Name_TIRUVANNAMALAI", "required": true}, {"type": "boolean",
+    "name": "District_Name_TUMKUR", "required": true}, {"type": "boolean", "name":
+    "District_Name_TUTICORIN", "required": true}, {"type": "boolean", "name": "District_Name_UJJAIN",
+    "required": true}, {"type": "boolean", "name": "District_Name_UKHRUL", "required":
+    true}, {"type": "boolean", "name": "District_Name_UMARIA", "required": true},
+    {"type": "boolean", "name": "District_Name_UTTAR KANNAD", "required": true}, {"type":
+    "boolean", "name": "District_Name_VELLORE", "required": true}, {"type": "boolean",
+    "name": "District_Name_VIDISHA", "required": true}, {"type": "boolean", "name":
+    "District_Name_VILLUPURAM", "required": true}, {"type": "boolean", "name": "District_Name_VIRUDHUNAGAR",
+    "required": true}, {"type": "boolean", "name": "District_Name_VISAKHAPATANAM",
+    "required": true}, {"type": "boolean", "name": "District_Name_VIZIANAGARAM", "required":
+    true}, {"type": "boolean", "name": "District_Name_WARANGAL", "required": true},
+    {"type": "boolean", "name": "District_Name_WARDHA", "required": true}, {"type":
+    "boolean", "name": "District_Name_WASHIM", "required": true}, {"type": "boolean",
+    "name": "District_Name_WEST GODAVARI", "required": true}, {"type": "boolean",
+    "name": "District_Name_YAVATMAL", "required": true}, {"type": "boolean", "name":
+    "Season_Rabi       ", "required": true}, {"type": "boolean", "name": "Season_Whole
+    Year ", "required": true}]'
+  outputs: '[{"type": "tensor", "tensor-spec": {"dtype": "float64", "shape": [-1]}}]'
+  params: null
+type_hint_from_example: false
+utc_time_created: '2026-03-24 11:33:00.998799'

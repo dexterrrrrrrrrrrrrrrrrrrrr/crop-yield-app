@@ -1,6 +1,10 @@
 import streamlit as st
 import pandas as pd
-import mlflow.pyfunc
+import pickle
+import os
+import mlflow
+
+from sklearn.dummy import DummyRegressor
 
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(
@@ -12,7 +16,21 @@ st.set_page_config(
 # ---------------- LOAD MODEL ----------------
 @st.cache_resource
 def load_model():
-    return mlflow.pyfunc.load_model("./model")
+    try:
+        model = mlflow.sklearn.load_model("model/")
+        st.success("✅ ML Model loaded successfully!")
+        return model
+    except Exception as e:
+        st.error(f"❌ Model load failed: {str(e)}")
+        st.info("Using dummy model as fallback...")
+        # Fallback dummy
+        X_dummy = pd.DataFrame([{col: 0 for col in model_columns}])
+        X_dummy.loc[0, "Crop_Year"] = 2015
+        X_dummy.loc[0, "Area"] = 10
+        y_dummy = [20]
+        dummy_model = DummyRegressor(strategy="mean")
+        dummy_model.fit(X_dummy, y_dummy)
+        return dummy_model
 
 # ---------------- TITLE ----------------
 st.title("🌾 Crop Yield Prediction System")
@@ -56,91 +74,59 @@ area = st.sidebar.number_input(
     value=10.0
 )
 
+# Feature columns handled dynamically from model.feature_names_in_
+
 # ---------------- PREDICTION ----------------
 if st.sidebar.button("🔮 Predict Yield"):
 
-    with st.spinner("Loading model and predicting..."):
-        try:
-            model = load_model()
-
-            # Get model columns safely
+    with st.spinner("Predicting..."):
+        model = load_model()
+        if model:
             try:
-                model_columns = model.metadata.signature.inputs.input_names()
-            except:
-                st.error("❌ Could not read model schema. Please define columns manually.")
-                st.stop()
+                state_col = f"State_{state}"
+                district_col = f"District_{district}"
+                season_col = f"Season_{season}"
+                crop_col = f"Crop_{crop}"
 
-            # Clean column names
-            model_columns = [col.strip() for col in model_columns]
+                feature_names = model.feature_names_in_.tolist()
+                input_data = {col: 0.0 for col in feature_names}
+                input_data["Crop_Year"] = float(crop_year)
+                input_data["Area"] = float(area)
 
-            # Initialize all features to 0
-            input_data = {col: 0 for col in model_columns}
+                for col in [state_col, district_col, season_col, crop_col]:
+                    if col in feature_names:
+                        input_data[col] = 1.0
 
-            # Add numeric inputs
-            input_data["Crop_Year"] = crop_year
-            input_data["Area"] = area
+                input_df = pd.DataFrame([input_data])
 
-            # ---------------- ENCODING ----------------
+                # Prediction
+                prediction = model.predict(input_df)[0]
 
-            # State encoding
-            state_col = f"State_Name_{state}"
-            if state_col in input_data:
-                input_data[state_col] = 1
+                # ---------------- OUTPUT ----------------
+                st.success("✅ Prediction Complete!")
 
-            # District encoding
-            district_col = f"District_Name_{district}"
-            if district_col in input_data:
-                input_data[district_col] = 1
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.metric("Area", f"{area} ha")
+                    st.metric("Year", crop_year)
+                with col2:
+                    st.metric("Season", season)
+                    st.metric("Location", f"{district}, {state}")
 
-            # Season encoding
-            season_col = f"Season_{season}"
-            if season_col in input_data:
-                input_data[season_col] = 1
+                st.markdown("---")
+                st.markdown("### 📊 Predicted Production")
+                st.markdown(f"# {prediction:.2f} Tonnes")
 
-            # Crop encoding
-            crop_col = f"Crop_{crop}"
-            if crop_col in input_data:
-                input_data[crop_col] = 1
+                yield_per_ha = prediction / area
+                st.info(f"Yield per hectare: {yield_per_ha:.2f} Tonnes/ha")
 
-            # Create dataframe
-            input_df = pd.DataFrame([input_data])
-            input_df = input_df.reindex(columns=model_columns, fill_value=0)
-
-            # Predict
-            prediction = model.predict(input_df)[0]
-
-            # ---------------- OUTPUT ----------------
-            st.success("✅ Prediction Complete!")
-
-            col1, col2 = st.columns(2)
-
-            with col1:
-                st.metric("Area", f"{area} ha")
-                st.metric("Year", crop_year)
-
-            with col2:
-                st.metric("Season", season)
-                st.metric("Location", f"{district}, {state}")
-
-            st.markdown("---")
-            st.markdown("### 📊 Predicted Production")
-            st.markdown(f"# {prediction:.2f} Tonnes")
-
-            yield_per_ha = prediction / area
-            st.info(f"Yield per hectare: {yield_per_ha:.2f} Tonnes/ha")
-
-        except Exception as e:
-            st.error("❌ Prediction Failed")
-            st.exception(e)
-
-            with st.expander("🔍 Debug Info"):
-                st.write("Model Columns:", model_columns if 'model_columns' in locals() else "Not loaded")
-                st.write("Input Data:", input_data if 'input_data' in locals() else "Not created")
+            except Exception as e:
+                st.error("❌ Prediction Failed")
+                st.exception(e)
 
 # ---------------- DEFAULT SCREEN ----------------
 else:
     st.info("👈 Configure inputs in sidebar and click Predict Yield")
-
     st.markdown("""
     ### 📖 About
     This ML model predicts crop production using:
@@ -154,4 +140,4 @@ else:
 
 # ---------------- FOOTER ----------------
 st.markdown("---")
-st.caption("🌾 Built with Streamlit + MLflow")
+st.caption("🌾 Built with Streamlit + Pickle")
